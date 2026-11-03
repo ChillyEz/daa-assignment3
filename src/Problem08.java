@@ -24,6 +24,7 @@ public class Problem08 {
         }
 
         int count = 0;
+        
         while (!queue.isEmpty()) {
             int course = queue.poll();
             count++;
