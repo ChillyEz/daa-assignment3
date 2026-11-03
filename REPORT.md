@@ -4,15 +4,15 @@
 
 ## Problems 1 and 2 - Number of Provinces
 
-- **DFS:** The recursive `dfs` scans a city's matrix row and marks reachable cities in `visited`. Each call from the outer loop starts a new province. Time: `O(n²)`; space: `O(n)`.
-- **DSU:** `parent` stores each city's DSU parent, and `rank` guides merging. `find` compresses paths; `union` returns `true` only for different groups, so I decrease the province count then. Time: `O(n² α(n))`; space: `O(n)`. Here, `α(n)` is practically constant.
+- **DFS:** I use Depth-First Search to count the number of connected components, where each component represents one province. Initially, all cities are marked as unvisited. The recursive `dfs` scans a city's matrix row and marks reachable cities in `visited`. Each call from the outer loop starts a new province. Time Complexity: `O(n²)` because each city is visited once, and DFS scans n matrix entries per city; Space Complexity: `O(n)` for the visited array and recursion stack.
+- **DSU:** The `parent[]` array stores the parent of each city in the DSU forest, while `rank[]` helps keep the trees shallow during merging.. `find` compresses paths; `union` returns `true` only for different groups, so I decrease the province count then. Time Complexity: `O(n² α(n))` because I check `O(n²)` city pairs, and each DSU operation takes amortized `O(α(n))` time; Space Complexity: `O(n)` for the `parent[]` and `rank[]` arrays
 
 ## Problems 3 and 4 - Minimum Spanning Tree
 
 Weights are Manhattan distances.
 
-- **Kruskal:** I store edges as `[distance, u, v]` and sort by distance. A successful DSU merge adds the edge's cost; I stop after `n - 1` accepted edges. Time: `O(n² log n)`; space: `O(n²)`.
-- **Prim:** `minDistance` stores each point's cheapest connection to the tree. I scan for the cheapest unvisited point, mark it in `visited`, and update distances to the remaining points. Time: `O(n²)`; space: `O(n)`.
+- **Kruskal:** First, I generate all possible undirected edges between pairs of points. Each `edge` stores its `Manhattan distance` and the indices of its two endpoints. I use `v = u + 1` to avoid generating duplicate edges. Next, I sort all edges by weight in ascending order. I initialize a `Disjoint Set Union` structure where each point starts in its own component.Then I process the sorted edges. For each edge, I call union() to check whether its endpoints belong to different components. If the union succeeds, I add the edge's weight to minCost and increment edgesUsed. Otherwise, I skip the edge because it would create a cycle. Time Complexity: `O(n² log n)`. The complete graph contains `O(n²)` edges, and sorting them takes `O(E log E)` = `O(n² log n)`. DSU operations are amortized `O(α(n))` each and do not dominate sorting.; Space Complexity: `O(n²)` for storing all edges, plus `O(n)` for the DSU arrays.
+- **Prim:** The `visited[]` array tracks which points are already included in the MST. The `minDistance[]` array stores the minimum cost of connecting each unvisited point to any point already in the tree. In each iteration, I select the unvisited point with the smallest `minDistance`, mark it as visited, and add its connection cost to `minCost`. Then I calculate the Manhattan distance from this point to every unvisited point and update minDistance whenever a cheaper connection is found. Time Complexity: `O(n²)` because each of the n iterations scans all points to find the next vertex and updates the distances to unvisited points.; Space Complexity: `O(n)` for the `visited[]` and `minDistance[]` arrays, without explicitly storing all edges.
 
 ## Problems 5 and 6 - Software Dependency Groups
 
